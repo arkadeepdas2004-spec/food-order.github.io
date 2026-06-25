@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders | FreshBite</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark">F</span>
+      <span><strong>FreshBite</strong><small>Kitchen</small></span>
+    </a>
+    <nav class="nav"><a href="/">Menu</a><a href="/login.html">Sign in</a></nav>
+  </header>
+
+  <main class="my-orders-page">
+    <section class="orders-access" id="ordersAccess">
+      <p class="eyebrow">Order history</p>
+      <h1>My orders</h1>
+      <p>Sign in to see your current and past orders.</p>
+      <form class="orders-phone-form" id="ordersPhoneForm">
+        <a class="submit-button auth-link-button" href="/login.html?next=/orders.html">Sign in or create account</a>
+        <p class="form-message" id="ordersMessage" role="status"></p>
+      </form>
+    </section>
+
+    <section class="orders-workspace" id="ordersWorkspace" hidden>
+      <div class="orders-toolbar">
+        <div><p class="eyebrow">Your food journey</p><h1>My orders</h1></div>
+        <button class="back-link" id="changePhone" type="button">Sign out</button>
+      </div>
+      <div class="orders-columns">
+        <div class="orders-groups">
+          <section>
+            <div class="orders-group-title"><h2>Current orders</h2><span id="currentCount">0</span></div>
+            <div class="customer-orders-list" id="currentOrders"></div>
+          </section>
+          <section>
+            <div class="orders-group-title"><h2>Past orders</h2><span id="pastCount">0</span></div>
+            <div class="customer-orders-list" id="pastOrders"></div>
+          </section>
+        </div>
+        <aside class="order-detail" id="orderDetail">
+          <div class="empty-cart">Select an order to see its details.</div>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <script src="/orders.js"></script>
+  <script src="/auth-status.js"></script>
+</body>
+</html>

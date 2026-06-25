@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | FreshBite</title>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark">F</span>
+      <span><strong>FreshBite</strong><small>Kitchen</small></span>
+    </a>
+    <nav class="nav">
+      <a href="/">Menu</a>
+      <a href="/orders.html">My orders</a>
+      <a href="/login.html">Sign in</a>
+      <span class="cart-pill">Cart <span id="cartCount">0</span></span>
+    </nav>
+  </header>
+
+  <main class="checkout-page">
+    <div class="checkout-intro">
+      <div>
+        <p class="eyebrow">Almost there</p>
+        <h1>Checkout</h1>
+        <p>Review your dishes and tell us where to bring them.</p>
+      </div>
+      <a class="back-link" href="/">← Continue shopping</a>
+    </div>
+
+    <section class="order-layout">
+      <div class="cart-panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">Your order</p><h2>Cart</h2></div>
+          <button class="text-button" type="button" id="clearCart">Clear</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="coupon-panel">
+          <label>Promo code<input id="couponCode" type="text" placeholder="FRESH10"></label>
+          <div class="coupon-actions">
+            <button class="text-button" id="applyCoupon" type="button">Apply</button>
+            <button class="back-link" id="removeCoupon" type="button" hidden>Remove</button>
+          </div>
+          <p class="form-message" id="couponMessage" role="status"></p>
+        </div>
+        <div class="totals">
+          <div><span>Subtotal</span><strong id="subtotal">Rs 0</strong></div>
+          <div><span>Delivery</span><strong id="deliveryFee">Rs 0</strong></div>
+          <div id="discountRow" hidden><span id="discountLabel">Promo discount</span><strong id="discountAmount">-Rs 0</strong></div>
+          <div class="total-row"><span>Total</span><strong id="total">Rs 0</strong></div>
+        </div>
+      </div>
+
+      <form class="checkout-form" id="checkoutForm">
+        <div class="panel-heading">
+          <div><p class="eyebrow">Delivery details</p><h2>Where to?</h2></div>
+        </div>
+        <div class="auth-notice" id="checkoutAuthNotice" hidden>
+          <strong>Sign in to place your order.</strong>
+          <a href="/login.html?next=/checkout.html">Sign in or create account</a>
+        </div>
+        <div class="checkout-step">
+          <span>1</span>
+          <div>
+            <strong>Choose delivery address</strong>
+            <small>Select a saved address or enter a new one.</small>
+          </div>
+        </div>
+        <label>Name<input name="name" type="text" autocomplete="name" placeholder="Your name" minlength="2" required></label>
+        <label>Phone<input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="9876543210" minlength="7" required></label>
+        <label id="savedAddressLabel" hidden>Saved address<select id="savedAddressSelect" name="savedAddress"></select></label>
+        <label>Address<textarea name="address" rows="4" autocomplete="street-address" placeholder="House number, street, area" minlength="8" required></textarea></label>
+
+        <div class="checkout-step">
+          <span>2</span>
+          <div>
+            <strong>Choose payment method</strong>
+            <small>Pick cash on delivery or an online payment option.</small>
+          </div>
+        </div>
+        <div class="payment-options">
+          <label><input name="paymentType" type="radio" value="Cash on delivery" required> Cash on delivery</label>
+          <label><input name="paymentType" type="radio" value="Online payment" required> Online payment</label>
+        </div>
+        <label id="onlinePaymentLabel" hidden>Online payment method
+          <select name="onlinePaymentMethod" id="onlinePaymentMethod">
+            <option value="">Choose online method</option>
+            <option value="UPI">UPI</option>
+            <option value="Card">Card</option>
+            <option value="Net banking">Net banking</option>
+            <option value="Wallet">Wallet</option>
+          </select>
+        </label>
+
+        <div class="checkout-step">
+          <span>3</span>
+          <div>
+            <strong>Confirm order</strong>
+            <small>Your order will be confirmed after this step.</small>
+          </div>
+        </div>
+        <button class="submit-button" type="submit">Confirm order</button>
+        <p class="form-message" id="formMessage" role="status"></p>
+      </form>
+    </section>
+  </main>
+  <script src="/checkout.js"></script>
+  <script src="/auth-status.js"></script>
+</body>
+</html>

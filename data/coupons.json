@@ -1,0 +1,27 @@
+[
+  {
+    "code": "FRESH10",
+    "description": "10% off orders above Rs 199",
+    "type": "percent",
+    "value": 10,
+    "minSubtotal": 199,
+    "maxDiscount": 100,
+    "active": true
+  },
+  {
+    "code": "SAVE50",
+    "description": "Rs 50 off orders above Rs 299",
+    "type": "fixed",
+    "value": 50,
+    "minSubtotal": 299,
+    "active": true
+  },
+  {
+    "code": "FREESHIP",
+    "description": "Free delivery above Rs 149",
+    "type": "free_delivery",
+    "value": 0,
+    "minSubtotal": 149,
+    "active": true
+  }
+]

@@ -1,0 +1,16 @@
+{
+  "name": "food-order",
+  "version": "1.0.0",
+  "description": "A simple Node.js food ordering app",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "food",
+    "order",
+    "node"
+  ],
+  "author": "",
+  "license": "MIT"
+}

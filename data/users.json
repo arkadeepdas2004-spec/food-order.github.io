@@ -1,0 +1,22 @@
+[
+  {
+    "id": "35160517-9eba-4322-b035-f323e5d35a58",
+    "name": "aarkadeep das",
+    "phone": "8293532857",
+    "photoUrl": "",
+    "addresses": [],
+    "passwordHash": "0d4f2dd4e84a8fde1c5a2782ef997efd:4919f77e357fab1650156ea2dd09a5c67800105370bf97c935bc269db7c0df68",
+    "createdAt": "2026-06-25T04:03:27.440Z"
+  },
+  {
+    "id": "5623070d-2469-4db0-b705-0fd1c1aef764",
+    "name": "king",
+    "phone": "8768367400",
+    "photoUrl": "",
+    "addresses": [
+      "ilambaazar"
+    ],
+    "passwordHash": "3214e3c7d0dfbfbcdd6c952b2b2c24a4:48abae0bde12d26e4c4e69a47dffafd4a1d6d6da6b1d6d49852c28f920c667b7",
+    "createdAt": "2026-06-25T05:14:51.789Z"
+  }
+]

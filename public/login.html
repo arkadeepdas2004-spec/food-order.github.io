@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in | FreshBite</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark">F</span>
+      <span><strong>FreshBite</strong><small>Kitchen</small></span>
+    </a>
+    <nav class="nav">
+      <a href="/">Menu</a>
+      <a href="/orders.html">My orders</a>
+    </nav>
+  </header>
+
+  <main class="auth-main">
+    <section class="auth-panel">
+      <p class="eyebrow">Customer account</p>
+      <h1>Sign in</h1>
+      <p>Use your phone number and password to order faster and view your order history.</p>
+
+      <div class="auth-tabs" role="tablist" aria-label="Account action">
+        <button class="active" type="button" id="showLogin">Sign in</button>
+        <button type="button" id="showRegister">Create account</button>
+      </div>
+
+      <form class="auth-form" id="loginForm">
+        <label>Phone<input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="9876543210" minlength="7" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" minlength="6" required></label>
+        <button class="submit-button" type="submit">Sign in</button>
+      </form>
+
+      <form class="auth-form" id="registerForm" hidden>
+        <label>Name<input name="name" type="text" autocomplete="name" placeholder="Your name" minlength="2" required></label>
+        <label>Phone<input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="9876543210" minlength="7" required></label>
+        <label>Photo URL<input name="photoUrl" type="url" placeholder="https://example.com/your-photo.jpg"></label>
+        <label>Password<input name="password" type="password" autocomplete="new-password" minlength="6" required></label>
+        <button class="submit-button" type="submit">Create account</button>
+      </form>
+
+      <p class="form-message" id="authMessage" role="status"></p>
+    </section>
+  </main>
+  <script src="/auth-status.js"></script>
+  <script src="/login.js"></script>
+</body>
+</html>

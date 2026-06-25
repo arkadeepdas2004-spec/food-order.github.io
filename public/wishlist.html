@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist | FreshBite</title>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark">F</span>
+      <span><strong>FreshBite</strong><small>Kitchen</small></span>
+    </a>
+    <nav class="nav">
+      <a href="/">Menu</a>
+      <a href="/orders.html">My orders</a>
+      <a href="/login.html">Sign in</a>
+      <a class="cart-pill" href="/checkout.html" aria-label="Open cart">
+        Cart <span id="cartCount">0</span>
+      </a>
+    </nav>
+  </header>
+
+  <main class="wishlist-page">
+    <section class="wishlist-access" id="wishlistAccess">
+      <p class="eyebrow">Saved dishes</p>
+      <h1>Wishlist</h1>
+      <p>Sign in to save your favorite items and order them faster later.</p>
+      <a class="submit-button auth-link-button" href="/login.html?next=/wishlist.html">Sign in or create account</a>
+    </section>
+
+    <section class="wishlist-workspace" id="wishlistWorkspace" hidden>
+      <div class="orders-toolbar">
+        <div><p class="eyebrow">Saved dishes</p><h1>Wishlist</h1></div>
+        <a class="back-link" href="/">Browse menu</a>
+      </div>
+      <div class="product-grid" id="wishlistGrid" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <template id="wishlistTemplate">
+    <article class="product-card">
+      <div class="product-image">
+        <img alt="">
+      </div>
+      <div class="product-info">
+        <div class="product-meta">
+          <span class="category"></span>
+          <span class="rating"></span>
+        </div>
+        <h3></h3>
+        <p></p>
+        <div class="product-footer">
+          <strong></strong>
+          <div class="product-actions">
+            <button class="remove-wishlist-button" type="button">Remove</button>
+            <button class="add-cart-button" type="button">Add</button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/wishlist.js"></script>
+  <script src="/auth-status.js"></script>
+</body>
+</html>

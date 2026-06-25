@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreshBite Food Ordering</title>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark">F</span>
+      <span>
+        <strong>FreshBite</strong>
+        <small>Kitchen</small>
+      </span>
+    </a>
+    <nav class="nav">
+      <a href="#menu">Menu</a>
+      <a href="/orders.html">My orders</a>
+      <a href="/login.html">Sign in</a>
+      <a class="cart-pill" href="/checkout.html" aria-label="Open cart">
+        Cart <span id="cartCount">0</span>
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-media" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="eyebrow">Fresh meals, fast checkout</p>
+        <h1>FreshBite</h1>
+        <p>Browse chef-picked dishes, add them to your cart, and place a delivery order with a smooth modern checkout.</p>
+        <div class="hero-actions">
+          <a class="primary-link" href="#menu">Order now</a>
+          <a class="ghost-link" href="/checkout.html">View cart</a>
+        </div>
+        <div class="hero-stats" aria-label="FreshBite highlights">
+          <span><strong>25 min</strong>avg delivery</span>
+          <span><strong>4.8</strong>top rated</span>
+          <span><strong>6</strong>fresh picks</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="menu-section" id="menu">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Today&apos;s menu</p>
+          <h2>Popular dishes near you</h2>
+        </div>
+        <label class="search-box">
+          <span>Search</span>
+          <input id="searchInput" type="search" placeholder="Pizza, dosa, shake">
+        </label>
+      </div>
+      <div class="category-tabs" id="categoryTabs"></div>
+      <div class="product-grid" id="productGrid" aria-live="polite"></div>
+    </section>
+
+  </main>
+
+  <template id="productTemplate">
+    <article class="product-card">
+      <div class="product-image">
+        <img alt="">
+      </div>
+      <div class="product-info">
+        <div class="product-meta">
+          <span class="category"></span>
+          <span class="rating"></span>
+        </div>
+        <h3></h3>
+        <p></p>
+        <div class="product-footer">
+          <strong></strong>
+          <div class="product-actions">
+            <button class="wishlist-toggle" type="button" aria-label="Save to wishlist">Save</button>
+            <button class="add-cart-button" type="button">Add</button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js"></script>
+  <script src="/auth-status.js"></script>
+</body>
+</html>
