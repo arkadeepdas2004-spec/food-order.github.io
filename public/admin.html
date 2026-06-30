@@ -26,6 +26,11 @@
         <button class="submit-button" type="submit">Sign in</button>
         <p class="form-message" id="loginMessage" role="status"></p>
       </form>
+      <form id="adminTwoFactorForm" class="admin-login-form two-factor-form" hidden>
+        <label>OTP code<input name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="\d{6}" placeholder="123456" required></label>
+        <button class="submit-button" type="submit">Verify OTP</button>
+        <button class="auth-link-button" type="button" id="restartAdminLogin">Use another account</button>
+      </form>
     </section>
 
     <section class="admin-dashboard" id="dashboard" hidden>
@@ -96,6 +101,22 @@
             <p class="form-message" id="productMessage" role="status"></p>
           </form>
           <div class="admin-products" id="adminProducts"></div>
+        </div>
+      </section>
+
+      <section class="product-manager">
+        <div class="admin-heading product-heading">
+          <div><p class="eyebrow">Security</p><h2>Admin access history</h2></div>
+        </div>
+        <div class="security-log-layout">
+          <section>
+            <h3>Login history</h3>
+            <div class="security-log-list" id="adminLoginHistory"></div>
+          </section>
+          <section>
+            <h3>Activity logs</h3>
+            <div class="security-log-list" id="adminActivityLogs"></div>
+          </section>
         </div>
       </section>
     </section>

@@ -1,7 +1,9 @@
 const loginPanel = document.querySelector("#loginPanel");
 const dashboard = document.querySelector("#dashboard");
 const loginForm = document.querySelector("#loginForm");
+const adminTwoFactorForm = document.querySelector("#adminTwoFactorForm");
 const loginMessage = document.querySelector("#loginMessage");
+const restartAdminLogin = document.querySelector("#restartAdminLogin");
 const ordersList = document.querySelector("#ordersList");
 const adminSummary = document.querySelector("#adminSummary");
 const refreshButton = document.querySelector("#refreshOrders");
@@ -15,8 +17,12 @@ const couponForm = document.querySelector("#couponForm");
 const couponAdminMessage = document.querySelector("#couponAdminMessage");
 const adminCoupons = document.querySelector("#adminCoupons");
 const saveCouponButton = document.querySelector("#saveCoupon");
+const adminLoginHistory = document.querySelector("#adminLoginHistory");
+const adminActivityLogs = document.querySelector("#adminActivityLogs");
 let products = [];
 let coupons = [];
+let adminChallengeToken = "";
+let adminCsrfToken = "";
 
 const currency = new Intl.NumberFormat("en-IN", {
   style: "currency", currency: "INR", maximumFractionDigits: 0
@@ -29,6 +35,10 @@ function formatPrice(value) {
 function showLogin(message = "") {
   loginPanel.hidden = false;
   dashboard.hidden = true;
+  loginForm.hidden = false;
+  adminTwoFactorForm.hidden = true;
+  adminChallengeToken = "";
+  adminCsrfToken = "";
   loginMessage.textContent = message;
   loginMessage.classList.toggle("error", Boolean(message));
 }
@@ -36,6 +46,18 @@ function showLogin(message = "") {
 function showDashboard() {
   loginPanel.hidden = true;
   dashboard.hidden = false;
+}
+
+function showAdminOtp(result) {
+  adminChallengeToken = result.challengeToken;
+  loginForm.hidden = true;
+  adminTwoFactorForm.hidden = false;
+  adminTwoFactorForm.reset();
+  adminTwoFactorForm.elements.code.focus();
+  const codeHint = result.developmentCode ? ` Code: ${result.developmentCode}` : "";
+  const destination = result.destination ? ` sent to ${result.destination}` : "";
+  loginMessage.textContent = `Enter the 6-digit admin OTP${destination}.${codeHint}`;
+  loginMessage.classList.remove("error");
 }
 
 function createOrderCard(order) {
@@ -93,12 +115,14 @@ function createOrderCard(order) {
   status.addEventListener("change", async () => {
     status.disabled = true;
     try {
+      await ensureAdminCsrfToken();
       const response = await fetch(`/api/admin/orders/${order.id}/status`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: adminJsonHeaders(),
         body: JSON.stringify({ status: status.value })
       });
       if (!response.ok) throw new Error();
+      await loadSecurityLogs();
     } catch (error) {
       status.value = order.status;
       window.alert("Could not update the order status.");
@@ -185,9 +209,84 @@ function renderProducts() {
     editButton.className = "text-button";
     editButton.textContent = "Edit";
     editButton.addEventListener("click", () => editProduct(product));
-    card.append(image, copy, editButton);
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "text-button danger-button";
+    deleteButton.textContent = "Delete";
+    deleteButton.addEventListener("click", () => deleteProduct(product, deleteButton));
+    card.append(image, copy, editButton, deleteButton);
     adminProducts.appendChild(card);
   });
+}
+
+function formatLogTime(value) {
+  return new Date(value).toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+function humanizeAction(action) {
+  return String(action || "")
+    .split("_")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function renderSecurityLogs(security) {
+  adminLoginHistory.innerHTML = "";
+  adminActivityLogs.innerHTML = "";
+
+  if (!security.loginHistory.length) {
+    adminLoginHistory.innerHTML = '<div class="empty-cart">No admin login attempts yet.</div>';
+  } else {
+    security.loginHistory.forEach(entry => {
+      const row = document.createElement("article");
+      row.className = `security-log-row ${entry.successful ? "success" : "failure"}`;
+      const title = document.createElement("strong");
+      title.textContent = entry.successful ? "Successful sign in" : "Failed sign in";
+      const details = document.createElement("span");
+      details.textContent = `${entry.username} - ${entry.ipAddress} - ${formatLogTime(entry.createdAt)}${entry.failureReason ? ` - ${entry.failureReason}` : ""}`;
+      row.append(title, details);
+      adminLoginHistory.appendChild(row);
+    });
+  }
+
+  if (!security.activityLogs.length) {
+    adminActivityLogs.innerHTML = '<div class="empty-cart">No admin activity yet.</div>';
+  } else {
+    security.activityLogs.forEach(entry => {
+      const row = document.createElement("article");
+      row.className = "security-log-row";
+      const title = document.createElement("strong");
+      title.textContent = humanizeAction(entry.action);
+      const details = document.createElement("span");
+      const extra = entry.details ? ` - ${Object.entries(entry.details).map(([key, value]) => `${key}: ${value}`).join(", ")}` : "";
+      details.textContent = `${entry.ipAddress} - ${formatLogTime(entry.createdAt)}${extra}`;
+      row.append(title, details);
+      adminActivityLogs.appendChild(row);
+    });
+  }
+}
+
+async function loadAdminCsrfToken() {
+  const response = await fetch("/api/admin/csrf");
+  if (!response.ok) throw new Error("Could not prepare admin security token.");
+  const result = await response.json();
+  adminCsrfToken = result.csrfToken;
+}
+
+async function ensureAdminCsrfToken() {
+  if (!adminCsrfToken) await loadAdminCsrfToken();
+}
+
+function adminJsonHeaders() {
+  return {
+    "Content-Type": "application/json",
+    "X-CSRF-Token": adminCsrfToken
+  };
 }
 
 async function loadProducts() {
@@ -204,13 +303,44 @@ async function loadCoupons() {
   renderCoupons();
 }
 
+async function loadSecurityLogs() {
+  const response = await fetch("/api/admin/security");
+  if (!response.ok) throw new Error("Could not load admin security logs.");
+  renderSecurityLogs(await response.json());
+}
+
 async function toggleCoupon(code, button) {
   button.disabled = true;
   try {
-    const response = await fetch(`/api/admin/coupons/${encodeURIComponent(code)}/toggle`, { method: "PUT" });
+    await ensureAdminCsrfToken();
+    const response = await fetch(`/api/admin/coupons/${encodeURIComponent(code)}/toggle`, {
+      method: "PUT",
+      headers: { "X-CSRF-Token": adminCsrfToken }
+    });
     const result = await response.json();
     if (!response.ok) throw new Error(result.errors?.[0] || "Could not update promo code.");
     await loadCoupons();
+    await loadSecurityLogs();
+  } catch (error) {
+    window.alert(error.message);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function deleteProduct(product, button) {
+  if (!window.confirm(`Delete ${product.name}?`)) return;
+  button.disabled = true;
+  try {
+    await ensureAdminCsrfToken();
+    const response = await fetch(`/api/admin/products/${product.id}`, {
+      method: "DELETE",
+      headers: { "X-CSRF-Token": adminCsrfToken }
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.errors?.[0] || "Could not delete product.");
+    await loadProducts();
+    await loadSecurityLogs();
   } catch (error) {
     window.alert(error.message);
   } finally {
@@ -229,6 +359,7 @@ async function loadOrders() {
     if (!response.ok) throw new Error("Could not load orders.");
     const orders = await response.json();
     showDashboard();
+    await loadAdminCsrfToken();
     const itemCount = orders.reduce((sum, order) =>
       sum + order.items.reduce((itemSum, item) => itemSum + item.quantity, 0), 0);
     adminSummary.innerHTML = `<div><strong>${orders.length}</strong><span>Orders</span></div><div><strong>${itemCount}</strong><span>Items ordered</span></div>`;
@@ -240,6 +371,7 @@ async function loadOrders() {
     }
     await loadProducts();
     await loadCoupons();
+    await loadSecurityLogs();
   } catch (error) {
     ordersList.innerHTML = `<div class="empty-cart">${error.message}</div>`;
   }
@@ -258,6 +390,10 @@ loginForm.addEventListener("submit", async event => {
     });
     const result = await response.json();
     if (!response.ok) throw new Error(result.errors?.[0] || "Could not sign in.");
+    if (result.requiresTwoFactor) {
+      showAdminOtp(result);
+      return;
+    }
     loginForm.reset();
     await loadOrders();
   } catch (error) {
@@ -267,10 +403,45 @@ loginForm.addEventListener("submit", async event => {
   }
 });
 
+adminTwoFactorForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  loginMessage.textContent = "";
+  loginMessage.classList.remove("error");
+  const button = adminTwoFactorForm.querySelector(".submit-button");
+  button.disabled = true;
+  try {
+    const response = await fetch("/api/admin/2fa/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        challengeToken: adminChallengeToken,
+        code: adminTwoFactorForm.elements.code.value
+      })
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.errors?.[0] || "Could not verify OTP.");
+    adminChallengeToken = "";
+    loginForm.reset();
+    adminTwoFactorForm.reset();
+    await loadOrders();
+  } catch (error) {
+    loginMessage.textContent = error.message;
+    loginMessage.classList.add("error");
+  } finally {
+    button.disabled = false;
+  }
+});
+
+restartAdminLogin.addEventListener("click", () => showLogin());
+
 refreshButton.addEventListener("click", loadOrders);
 logoutButton.addEventListener("click", async () => {
-  await fetch("/api/admin/logout", { method: "POST" });
-  showLogin();
+  try {
+    await ensureAdminCsrfToken();
+    await fetch("/api/admin/logout", { method: "POST", headers: { "X-CSRF-Token": adminCsrfToken } });
+  } finally {
+    showLogin();
+  }
 });
 
 cancelEditButton.addEventListener("click", resetProductForm);
@@ -287,9 +458,10 @@ productForm.addEventListener("submit", async event => {
   payload.rating = Number(payload.rating);
   saveProductButton.disabled = true;
   try {
+    await ensureAdminCsrfToken();
     const response = await fetch(id ? `/api/admin/products/${id}` : "/api/admin/products", {
       method: id ? "PUT" : "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: adminJsonHeaders(),
       body: JSON.stringify(payload)
     });
     const result = await response.json();
@@ -297,6 +469,7 @@ productForm.addEventListener("submit", async event => {
     productMessage.textContent = id ? "Product updated." : "Product added.";
     resetProductForm();
     await loadProducts();
+    await loadSecurityLogs();
   } catch (error) {
     productMessage.textContent = error.message;
     productMessage.classList.add("error");
@@ -320,9 +493,10 @@ couponForm.addEventListener("submit", async event => {
   }
   saveCouponButton.disabled = true;
   try {
+    await ensureAdminCsrfToken();
     const response = await fetch("/api/admin/coupons", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: adminJsonHeaders(),
       body: JSON.stringify(payload)
     });
     const result = await response.json();
@@ -331,6 +505,7 @@ couponForm.addEventListener("submit", async event => {
     couponForm.reset();
     couponForm.elements.minSubtotal.value = "0";
     await loadCoupons();
+    await loadSecurityLogs();
   } catch (error) {
     couponAdminMessage.textContent = error.message;
     couponAdminMessage.classList.add("error");

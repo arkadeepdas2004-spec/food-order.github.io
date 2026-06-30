@@ -1038,6 +1038,13 @@ h2 {
   box-shadow: 0 0 0 4px rgba(255, 79, 46, 0.12);
 }
 
+.password-rules {
+  margin: -4px 0 2px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
 .auth-tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1064,6 +1071,11 @@ h2 {
   box-shadow: var(--small-shadow);
 }
 
+.auth-tabs button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
 .auth-notice {
   display: grid;
   gap: 8px;
@@ -1087,6 +1099,13 @@ h2 {
   color: #fff;
   text-align: center;
   text-decoration: none;
+}
+
+.two-factor-form .auth-link-button {
+  min-height: 40px;
+  color: var(--accent);
+  background: rgba(255, 79, 46, 0.1);
+  border-radius: 8px;
 }
 
 .checkout-form input[readonly] {
@@ -1373,8 +1392,65 @@ h2 {
   white-space: nowrap;
 }
 
+.danger-button {
+  color: #b42318;
+}
+
+.danger-button:hover {
+  color: #7a1510;
+}
+
+.security-log-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.security-log-layout > section {
+  padding: 22px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--small-shadow);
+}
+
+.security-log-layout h3 {
+  margin: 0 0 14px;
+  font-size: 1rem;
+}
+
+.security-log-list {
+  display: grid;
+  gap: 10px;
+}
+
+.security-log-row {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  background: #fbfcfe;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--muted);
+  border-radius: 8px;
+}
+
+.security-log-row.success {
+  border-left-color: #1f9d55;
+}
+
+.security-log-row.failure {
+  border-left-color: #d64545;
+}
+
+.security-log-row span {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 @media (max-width: 900px) {
-  .product-manager-layout {
+  .product-manager-layout,
+  .security-log-layout {
     grid-template-columns: 1fr;
   }
 }

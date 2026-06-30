@@ -31,7 +31,7 @@
 
       <form class="auth-form" id="loginForm">
         <label>Phone<input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="9876543210" minlength="7" required></label>
-        <label>Password<input name="password" type="password" autocomplete="current-password" minlength="6" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
         <button class="submit-button" type="submit">Sign in</button>
       </form>
 
@@ -39,8 +39,15 @@
         <label>Name<input name="name" type="text" autocomplete="name" placeholder="Your name" minlength="2" required></label>
         <label>Phone<input name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="9876543210" minlength="7" required></label>
         <label>Photo URL<input name="photoUrl" type="url" placeholder="https://example.com/your-photo.jpg"></label>
-        <label>Password<input name="password" type="password" autocomplete="new-password" minlength="6" required></label>
+        <label>Password<input name="password" type="password" autocomplete="new-password" minlength="10" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{10,}" title="Use at least 10 characters with uppercase, lowercase, number, and symbol." required></label>
+        <p class="password-rules">Use 10+ characters with uppercase, lowercase, number, and symbol. Avoid spaces, your name, and your phone number.</p>
         <button class="submit-button" type="submit">Create account</button>
+      </form>
+
+      <form class="auth-form two-factor-form" id="twoFactorForm" hidden>
+        <label>Verification code<input name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="\d{6}" placeholder="123456" required></label>
+        <button class="submit-button" type="submit">Verify</button>
+        <button class="auth-link-button" type="button" id="restartAuth">Use another account</button>
       </form>
 
       <p class="form-message" id="authMessage" role="status"></p>
